@@ -136,6 +136,10 @@ class ImpersonateManager
             $impersonated = $this->app['auth']->guard($this->getImpersonatorGuardUsingName())->user();
             $impersonator = $this->findUserById($this->getImpersonatorId(), $this->getImpersonatorGuardName());
 
+            if (array_key_exists('sanctum', config('auth.guards'))) {
+                $this->app['auth']->guard('sanctum')->setUser($impersonator);
+            }
+            
             $this->app['auth']->guard($this->getCurrentAuthGuardName())->quietLogout();
             $this->app['auth']->guard($this->getImpersonatorGuardName())->quietLogin($impersonator);
 
